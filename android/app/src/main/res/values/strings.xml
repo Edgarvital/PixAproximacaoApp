@@ -1,0 +1,4 @@
+<resources>
+    <string name="servicedesc">Serviço de emulação NFC para Pix</string>
+    <string name="aiddescription">Identificador AID do Pix</string>
+</resources>
