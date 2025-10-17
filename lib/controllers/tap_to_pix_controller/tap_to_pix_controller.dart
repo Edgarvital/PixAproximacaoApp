@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 
 class TapToPixController with ChangeNotifier {
-  static const _channel = MethodChannel('com.example.pix_nfc_app/nfc');
+  static const _channel = MethodChannel('com.example.pix_aproximacao_app/nfc');
 
   String? _pixUri;
   String? get pixUri => _pixUri;
@@ -16,6 +16,7 @@ class TapToPixController with ChangeNotifier {
   }
 
   void _setupMethodChannel() {
+
     _channel.setMethodCallHandler(_handleMethodCall);
   }
 

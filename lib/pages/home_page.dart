@@ -1,80 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '../controllers/tap_to_pix_controller/tap_to_pix_controller.dart';
-
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-
-  @override
-  void initState() {
-    super.initState();
-    // Adiciona um listener para navegar quando a URI do PIX for recebida
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final controller = Provider.of<TapToPixController>(context, listen: false);
-      controller.addListener(_onPixUriChanged);
-    });
-  }
-
-  @override
-  void dispose() {
-    Provider.of<TapToPixController>(context, listen: false).removeListener(_onPixUriChanged);
-    super.dispose();
-  }
-
-  void _onPixUriChanged() {
-    final controller = Provider.of<TapToPixController>(context, listen: false);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<TapToPixController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PIX por Aproximação'),
+        title: const Text('Banco Digital'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.nfc,
-                size: 100,
-                color: Colors.grey.shade400,
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              'Área Pix',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 24),
-              const Text(
-                'Aproxime para pagar com PIX',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Aproxime seu celular de um terminal de pagamento para iniciar.',
-                style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-                textAlign: TextAlign.center,
-              ),
-              if(controller.pixUri != null)
-                ...[const SizedBox(height: 12),
-                  Text(
-                    'URI do PIX: ${controller.pixUri}',
-                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-                    textAlign: TextAlign.center,
-                  ),],
-
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            // Botão para Pix por Aproximação
+            _buildActionButton(
+              context: context,
+              icon: Icons.nfc,
+              label: 'Pix por Aproximação',
+              onPressed: () {
+                // Navega para a tela de escaneamento NFC
+                context.go('/pix/proximity');
+              },
+            ),
+            const SizedBox(height: 12),
+            // Botão para simular um pagamento de QR Code
+            _buildActionButton(
+              context: context,
+              icon: Icons.qr_code_scanner,
+              label: 'Pagar (Simulado)',
+              onPressed: () {
+                // Simula a leitura de um QR Code e navega para a confirmação
+                // passando a URI do PIX como parâmetro 'extra'.
+                const simulatedPixUri = '00020126...exemplo_de_uri_pix...5303986';
+                context.go('/pix/confirm', extra: simulatedPixUri);
+              },
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  /// Widget auxiliar para criar os botões de ação padronizados.
+  Widget _buildActionButton({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 28),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.centerLeft,
       ),
     );
   }

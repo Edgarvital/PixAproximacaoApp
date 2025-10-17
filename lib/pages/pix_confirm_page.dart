@@ -8,11 +8,7 @@ class PixConfirmPage extends StatelessWidget {
   final String pixUri;
 
   const PixConfirmPage({super.key, required this.pixUri});
-
-  // Função mock para "parsear" a URI e extrair informações
   Map<String, String> _parsePixUri() {
-    // ATENÇÃO: Esta é uma implementação SIMPLIFICADA.
-    // Você deve usar uma biblioteca robusta para validar e parsear o EMV-QR Code.
     return {
       'valor': 'R\$ 12,34',
       'recebedor': 'Empresa Exemplo LTDA',
@@ -31,9 +27,8 @@ class PixConfirmPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            // Limpa o estado e volta para a home
             Provider.of<TapToPixController>(context, listen: false).reset();
-            context.go('/');
+            context.pop();
           },
         ),
       ),
@@ -68,11 +63,10 @@ class PixConfirmPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                // AQUI: Chamar o fluxo de autenticação do usuário
-                // (biometria, PIN, etc.) ANTES de prosseguir.
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Autenticação necessária! (Não implementado)')),
+                  const SnackBar(content: Text('Pix Efetuado!')),
                 );
+                context.pop();
               },
               child: const Text('Confirmar e Pagar', style: TextStyle(fontSize: 18)),
             ),
